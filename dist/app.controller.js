@@ -16,6 +16,9 @@ const app = (0, express_1.default)();
 const bootstrap = async () => {
     await (0, DBConnection_1.DBConnection)();
     app.use(express_1.default.json());
+    app.use("/", (req, res) => {
+        res.send("Welcome to 3D Animation");
+    });
     app.use("/api/v1", routes_1.default);
     app.use("/{*dummy}", (req, res) => {
         res.status(404).json({
@@ -29,8 +32,8 @@ const bootstrap = async () => {
             stack: err.stack,
         });
     });
-    app.listen(process.env.SERVER_PORT, () => {
-        console.log(`Server is running on port ${process.env.SERVER_PORT}`);
+    app.listen(process.env.SERVER_PORT, process.env.HOST, () => {
+        console.log(`Server is running on port ${process.env.HOST}:${process.env.SERVER_PORT}`);
     });
 };
 exports.bootstrap = bootstrap;
