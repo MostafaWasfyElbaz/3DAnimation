@@ -15,9 +15,7 @@
   "type": "commonjs",
   "main": "./dist/index.js",
   "scripts": {
-    "preinstall": "./download.sh",
-    "postinstall": "./cleanup.sh",
-    "prestart": "./prepare.sh",
+    "build": "tsc",
     "start": "node ./dist/index.js"
   },
   "dependencies": {
@@ -33,5 +31,8 @@
     "nanoid": "^5.1.5",
     "nodemailer": "^7.0.6",
     "zod": "^4.1.8"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3"
   }
 }

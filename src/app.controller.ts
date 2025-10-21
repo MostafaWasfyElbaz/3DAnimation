@@ -1,9 +1,8 @@
-import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import baseRouter from "./routes";
 import { IError } from "./common/index";
-import { NextFunction, Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { DBConnection } from "./DB/DBConnection";
 
 dotenv.config({
@@ -39,6 +38,8 @@ export const bootstrap = async (): Promise<void> => {
     }
   );
   app.listen(process.env.SERVER_PORT, process.env.HOST, () => {
-    console.log(`Server is running on port ${process.env.HOST}:${process.env.SERVER_PORT}`);
+    console.log(
+      `Server is running on port ${process.env.HOST}:${process.env.SERVER_PORT}`
+    );
   });
 };
