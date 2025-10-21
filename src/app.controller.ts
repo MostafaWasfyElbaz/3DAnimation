@@ -15,6 +15,9 @@ const app = express();
 export const bootstrap = async (): Promise<void> => {
   await DBConnection();
   app.use(express.json());
+  app.use("/", (req, res) => {
+    res.send("Welcome to 3D Animation");
+  });
   app.use("/api/v1", baseRouter);
   app.use("/{*dummy}", (req, res) => {
     res.status(404).json({
