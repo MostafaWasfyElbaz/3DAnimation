@@ -14,8 +14,8 @@ const app = express();
 export const bootstrap = async (): Promise<void> => {
   await DBConnection();
   app.use(express.json());
-  app.use("/", (req, res) => {
-    res.send("Welcome to 3D Animation");
+  app.get("/", (req, res) => {
+    res.status(200).json("Welcome to 3D Animation");
   });
   app.use("/api/v1", baseRouter);
   app.use("/{*dummy}", (req, res) => {
@@ -37,7 +37,7 @@ export const bootstrap = async (): Promise<void> => {
       });
     }
   );
-  app.listen(process.env.SERVER_PORT, process.env.HOST, () => {
+  app.listen(process.env.SERVER_PORT, () => {
     console.log(
       `Server is running on port ${process.env.HOST}:${process.env.SERVER_PORT}`
     );
