@@ -15,7 +15,6 @@
   "type": "commonjs",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc",
     "start": "node ./dist/index.js"
   },
   "dependencies": {
