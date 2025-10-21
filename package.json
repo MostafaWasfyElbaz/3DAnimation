@@ -1,0 +1,37 @@
+{
+  "name": "3danimation",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/MostafaWasfyElbaz/3DAnimation#readme",
+  "bugs": {
+    "url": "https://github.com/MostafaWasfyElbaz/3DAnimation/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MostafaWasfyElbaz/3DAnimation.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "scripts": {
+    "preinstall": "./download.sh",
+    "postinstall": "./cleanup.sh",
+    "prestart": "./prepare.sh",
+    "start": "node ./dist/index.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.896.0",
+    "@aws-sdk/lib-storage": "^3.896.0",
+    "@aws-sdk/s3-request-presigner": "^3.899.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.1",
+    "multer": "^2.0.2",
+    "nanoid": "^5.1.5",
+    "nodemailer": "^7.0.6",
+    "zod": "^4.1.8"
+  }
+}
