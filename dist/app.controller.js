@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bootstrap = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
 const routes_1 = __importDefault(require("./routes"));
@@ -33,7 +32,7 @@ const bootstrap = async () => {
         });
     });
     app.listen(process.env.SERVER_PORT, () => {
-        console.log(`Server is running on port ${process.env.HOST}:${process.env.SERVER_PORT}`);
+        console.log(`Server is running on port ${process.env.SERVER_PORT}`);
     });
 };
-exports.bootstrap = bootstrap;
+exports.default = bootstrap;

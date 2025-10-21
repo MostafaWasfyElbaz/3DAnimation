@@ -11,7 +11,7 @@ dotenv.config({
 
 const app = express();
 
-export const bootstrap = async (): Promise<void> => {
+ const bootstrap = async (): Promise<void> => {
   await DBConnection();
   app.use(express.json());
   app.get("/", (req, res) => {
@@ -39,7 +39,9 @@ export const bootstrap = async (): Promise<void> => {
   );
   app.listen(process.env.SERVER_PORT, () => {
     console.log(
-      `Server is running on port ${process.env.HOST}:${process.env.SERVER_PORT}`
+      `Server is running on port ${process.env.SERVER_PORT}`
     );
   });
 };
+
+export default bootstrap;
