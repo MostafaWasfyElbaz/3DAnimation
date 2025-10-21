@@ -16,7 +16,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "start": "node ./dist/index.js",
-    "deploy":"git add . && git commit -m 'update' && git push origin main"
+    "deploy": "git add . && git commit -m 'update' && git push origin main"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.896.0",
@@ -32,7 +32,7 @@
     "nodemailer": "^7.0.6",
     "zod": "^4.1.8"
   },
-    "devDependencies": {
+  "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",

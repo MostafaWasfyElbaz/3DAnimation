@@ -15,9 +15,6 @@ const app = (0, express_1.default)();
 const bootstrap = async () => {
     await (0, DBConnection_1.DBConnection)();
     app.use(express_1.default.json());
-    app.get("/", (req, res) => {
-        res.status(200).json("Welcome to 3D Animation");
-    });
     app.use("/api/v1", routes_1.default);
     app.use("/{*dummy}", (req, res) => {
         res.status(404).json({
