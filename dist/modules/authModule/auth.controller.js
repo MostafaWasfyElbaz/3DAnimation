@@ -18,7 +18,6 @@ const routes = {
     confirmEmail: "/confirm-email",
     resendEmailOtp: "/resend-email-otp",
     resendUpdateEmailOtp: "/resend-update-email-otp",
-    resendPasswordOtp: "/resend-password-otp",
     forgotPassword: "/forgot-password",
     resetPassword: "/reset-password",
     updateEmail: "/update-email",
