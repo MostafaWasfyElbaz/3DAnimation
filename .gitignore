@@ -4,7 +4,5 @@
 *.env
 !.env.example
 
-# Config folder with secrets
-./src/config/.env
 # Dependencies
 node_modules
