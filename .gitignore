@@ -7,6 +7,7 @@
 # Config folder with secrets
 ./src/config/.env
 ./src/config/
-
+# Dependencies
+node_modules
 
 3DAnimation.pem
