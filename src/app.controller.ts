@@ -11,7 +11,7 @@ dotenv.config({
   path: path.resolve("./src/config/.env"),
 });
 
-const app = express();
+export const app = express();
 
 export const bootstrap = async (): Promise<void> => {
   app.use(cors());
@@ -42,7 +42,5 @@ export const bootstrap = async (): Promise<void> => {
       });
     }
   );
-  app.listen(process.env.SERVER_PORT, () => {
-    console.log(`Server is running on port ${process.env.SERVER_PORT}`);
-  });
+
 };
