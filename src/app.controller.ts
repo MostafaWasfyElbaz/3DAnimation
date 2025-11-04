@@ -17,8 +17,13 @@ export const bootstrap = async (): Promise<void> => {
   app.use(cors());
   await DBConnection();
   app.use(express.json());
+  app.use("/", (req: Request, res: Response) => {
+    res.json({
+      message: "Welcome to the API",
+    });
+  });
   app.use("/api/v1", baseRouter);
-  app.use("/{*dummy}", (req:Request, res:Response) => {
+  app.use("/{*dummy}", (req: Request, res: Response) => {
     res.status(404).json({
       message: "Page not found",
     });
