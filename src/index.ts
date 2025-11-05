@@ -1,3 +1,2 @@
-import { bootstrap, app } from "./app.controller";
+import { bootstrap } from "./app.controller";
 bootstrap();
-export default app;
