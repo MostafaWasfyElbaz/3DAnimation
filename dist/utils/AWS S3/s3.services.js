@@ -24,7 +24,7 @@ class S3Services {
         }
         return command.input.Key;
     };
-    uploadSingleLargeFile = async ({ Bucket = process.env.AWS_BUCKET_NAME, ACL = "private", Path = "general", file, storeIn = index_1.StoreIn.memory, }) => {
+    uploadSingleLargeFile = async ({ Bucket = process.env.AWS_BUCKET_NAME, ACL = "private", Path = "general", file, storeIn = index_1.StoreIn.disk, }) => {
         const upload = new lib_storage_1.Upload({
             client: (0, index_2.s3Client)(),
             partSize: 10 * 1024 * 1024,

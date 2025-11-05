@@ -7,4 +7,5 @@ var ModelMimeType;
     ModelMimeType["gltfBinary"] = "model/gltf-binary";
     ModelMimeType["obj"] = "model/obj";
     ModelMimeType["glb"] = "model/glb";
+    ModelMimeType["png"] = "image/png";
 })(ModelMimeType || (exports.ModelMimeType = ModelMimeType = {}));

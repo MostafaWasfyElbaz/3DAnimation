@@ -51,7 +51,7 @@ export class S3Services implements IS3Services {
     ACL = "private",
     Path = "general",
     file,
-    storeIn = StoreIn.memory,
+    storeIn = StoreIn.disk,
   }: {
     Bucket?: string;
     ACL?: ObjectCannedACL;
