@@ -8,4 +8,5 @@ var ModelMimeType;
     ModelMimeType["obj"] = "model/obj";
     ModelMimeType["glb"] = "model/glb";
     ModelMimeType["png"] = "image/png";
+    ModelMimeType["jpg"] = "image/jpg";
 })(ModelMimeType || (exports.ModelMimeType = ModelMimeType = {}));

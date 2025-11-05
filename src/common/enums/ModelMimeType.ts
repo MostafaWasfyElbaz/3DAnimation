@@ -3,5 +3,6 @@ export enum ModelMimeType {
     gltfBinary="model/gltf-binary",
     obj="model/obj",
     glb="model/glb",
-    png="image/png"
+    png="image/png",
+    jpg="image/jpg",
 }
