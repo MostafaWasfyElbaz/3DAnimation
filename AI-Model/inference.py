@@ -7,7 +7,19 @@ import torchvision.transforms as T
 from model_architecture import MultiModal3DModel
 from pathlib import Path
 import pymeshlab
+import gdown
+import os
 parent_dir = Path(__file__).parent
+model_path = parent_dir / "best_pointcloud_model3.pth"
+file_id = '10DM-GnUIGwzjuMzFU5KIfw5V9L76lXE2'
+def download_if_not_exists():
+    if not os.path.exists(model_path):
+        print(f"Model not found. Downloading from Google Drive...")
+        url = f'https://drive.google.com/uc?id={file_id}'
+        gdown.download(url, str(model_path), quiet=False)
+        print("Download complete!")
+    else:
+        print("Model already exists. Skipping download.")
 model_path = parent_dir / "best_pointcloud_model3.pth"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 IMG_SIZE = (256, 256)
