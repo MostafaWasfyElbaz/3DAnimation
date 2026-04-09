@@ -18,6 +18,10 @@ export const bootstrap = async (): Promise<void> => {
   app.use(cors());
   await DBConnection();
   app.use(express.json());
+  app.use("/", (req: Request, res: Response, next: NextFunction) => {
+    console.log("Hello from middleware");
+    next();
+  });
   app.use("/api/v1", baseRouter);
   app.use("/{*dummy}", (req: Request, res: Response) => {
     throw new pageNotFoundError();
@@ -36,7 +40,7 @@ export const bootstrap = async (): Promise<void> => {
       });
     },
   );
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT;
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
