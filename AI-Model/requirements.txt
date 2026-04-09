@@ -1,0 +1,10 @@
+gdown
+torch
+torchvision
+pymeshlab
+numpy
+trimesh
+Pillow
+fastapi
+python-multipart
+uvicorn
