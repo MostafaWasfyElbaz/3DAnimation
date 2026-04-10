@@ -251,7 +251,10 @@ export default class ProjectService implements IProjectServices {
     res: Response,
     next: NextFunction,
   ): Promise<Response> => {
-    console.log("test0")
+    return successHandler({
+      res,
+      msg: "Image to model started",
+    });
     const { projectId }: getProjectByIdDTO = req.params as getProjectByIdDTO;
     const files = req.files as Express.Multer.File[];
     if (!files || files.length < 3 || files.length > 5) {
@@ -260,7 +263,7 @@ export default class ProjectService implements IProjectServices {
       });
     }
     try {
-      console.log("test1")
+      console.log("test1");
       const project = await this.projectRepo.getProjectById({
         projectId,
         userId: res.locals.user._id,
@@ -268,12 +271,12 @@ export default class ProjectService implements IProjectServices {
       if (!project) {
         throw new projectNotFound();
       }
-      console.log("test2")
+      console.log("test2");
       const model = await generateModel({ files });
       if (!model) {
         throw new modelCreationFailed();
       }
-      console.log("test3")
+      console.log("test3");
       const uploadedRawImages = await this.s3Services.uploadMultiFiles({
         files,
         Path: `${res.locals.user._id}/raw-images`,
@@ -282,7 +285,7 @@ export default class ProjectService implements IProjectServices {
       if (!uploadedRawImages || uploadedRawImages.length !== files.length) {
         throw new internalServerError("Failed to upload raw images to S3.");
       }
-      console.log("test4")
+      console.log("test4");
       const uploadedModel = await this.s3Services.uploadSingleFile({
         file: {
           fieldname: "model",
@@ -301,7 +304,7 @@ export default class ProjectService implements IProjectServices {
       if (!uploadedModel) {
         throw new internalServerError("Failed to upload model to S3.");
       }
-      console.log("test5")
+      console.log("test5");
       const getGlbFile = await this.s3Services.getModelUrl({
         fileKey: uploadedModel,
       });
@@ -309,7 +312,7 @@ export default class ProjectService implements IProjectServices {
       if (!getGlbFile) {
         throw new internalServerError("Failed to get model URL from S3.");
       }
-      console.log("test6")
+      console.log("test6");
       const saveModel = await this.projectRepo.createModel({
         projectId,
         userId: res.locals.user._id,
@@ -322,7 +325,7 @@ export default class ProjectService implements IProjectServices {
       if (!saveModel) {
         throw new internalServerError("Failed to save model to database.");
       }
-      console.log("test7")
+      console.log("test7");
       return successHandler({
         res,
         msg: "Model created successfully",
