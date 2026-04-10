@@ -1,7 +1,7 @@
 gdown
 torch
 torchvision
-pymeshlab
+open3d
 numpy
 trimesh
 Pillow
