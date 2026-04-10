@@ -31,5 +31,5 @@ const geometrySchema = z.object({
 export const updateProjectSchema = z.object({
   geometries: z.array(geometrySchema).optional() as z.ZodType<IGeometry[]>,
   projectName: generalValidation.name.optional(),
-  models: z.array(z.string()).optional(),
+  models: z.array(generalValidation.id).optional(),
 });

@@ -7,9 +7,9 @@ export const geometrySchema = new Schema<IGeometry>(
   {
     isObject3D: { type: Boolean, default: true },
     uuid: {
-      type: String,
+      type: uuidv4,
       required: true,
-      default: () => uuidv4(),
+      unique: true,
     },
     name: {
       type: String,
