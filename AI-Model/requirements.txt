@@ -8,3 +8,4 @@ Pillow
 fastapi
 python-multipart
 uvicorn
+gradio

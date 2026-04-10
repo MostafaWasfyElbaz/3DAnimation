@@ -22,7 +22,7 @@ export async function generateModel({
 
   try {
     const res: AxiosResponse<Buffer> = await axios.post(
-      "http://localhost:8000/predict",
+      "https://mostafa-wasfy-elbaz-3danimationai.hf.space/predict",
       form,
       {
         headers: {
