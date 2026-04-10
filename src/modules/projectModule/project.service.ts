@@ -329,7 +329,7 @@ export default class ProjectService implements IProjectServices {
         },
       });
     } catch (error) {
-      throw new internalServerError();
+      throw error;
     }
   };
 }
