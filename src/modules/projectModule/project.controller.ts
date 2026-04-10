@@ -32,6 +32,9 @@ router.post(
   auth(),
   uploadFile({}).array("images", 5),
   validationMiddleware(Image2ModelSchema),
+  (req, res) => {
+    res.json({ msg: "test" });
+  },
   projectService.Image2Model,
 );
 
