@@ -139,32 +139,9 @@ export default class ProjectService implements IProjectServices {
         throw new projectNotFound();
       }
       if (!res.locals.user.approved) {
-        const projectData = (project as { toObject: () => any }).toObject();
-        const models = projectData.models ?? [];
-
-        const modelKeys = models
-          .map((model: { modelUrl?: string }) => model.modelUrl)
-          .filter((key: string | undefined): key is string => Boolean(key));
-
-        const rawImageKeys = models
-          .reduce(
-            (acc: string[], model: { rawImagesUrls?: string[] }) => [
-              ...acc,
-              ...(model.rawImagesUrls ?? []),
-            ],
-            [],
-          )
-          .filter((key: string | undefined): key is string => Boolean(key));
-
-        const keysToDelete = Array.from(
-          new Set([...modelKeys, ...rawImageKeys]),
-        );
-
-        if (keysToDelete.length) {
-          await this.s3Services.deleteAssets({
-            urls: keysToDelete,
-          });
-        }
+        await this.s3Services.deleteAssets({
+          urls: [`${res.locals.user._id}/${project.name}`],
+        });
       }
 
       const isDeleted = await this.projectRepo.deleteProject({
@@ -259,7 +236,7 @@ export default class ProjectService implements IProjectServices {
       });
     }
     try {
-    const project = await this.projectRepo.getProjectById({
+      const project = await this.projectRepo.getProjectById({
         projectId,
         userId: res.locals.user._id,
       });
@@ -272,7 +249,7 @@ export default class ProjectService implements IProjectServices {
       }
       const uploadedRawImages = await this.s3Services.uploadMultiFiles({
         files,
-        Path: `${res.locals.user._id}/raw-images`,
+        Path: `${res.locals.user._id}/${project.name}/raw-images`,
       });
 
       if (!uploadedRawImages || uploadedRawImages.length !== files.length) {
@@ -290,7 +267,7 @@ export default class ProjectService implements IProjectServices {
           path: "",
           buffer: model,
         } as Express.Multer.File,
-        Path: `${res.locals.user._id}/models`,
+        Path: `${res.locals.user._id}/${project.name}/models`,
       });
 
       if (!uploadedModel) {

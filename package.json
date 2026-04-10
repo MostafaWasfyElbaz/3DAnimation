@@ -8,12 +8,8 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "node --watch ./dist/index.js",
-    "start": "node ./dist/index.js",
+    "start": "npm install --omit=dev && node ./dist/index.js",
     "build": "tsc",
-    "start-ai:linux": "cd AI-Model && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && python main.py",
-    "start-ai:windows": "cd AI-Model && python -m venv .venv && .venv\\Scripts\\activate && pip install -r requirements.txt && python main.py",
-    "start:bothLinux": "concurrently \"npm run start\" \"npm run start-ai:linux\"",
-    "start:bothWindows": "concurrently \"npm run start\" \"npm run start-ai:windows\"",
     "deploy": "git add . && git commit -m 'update' && git push origin main"
   },
   "devDependencies": {
