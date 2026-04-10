@@ -334,10 +334,7 @@ export default class ProjectService implements IProjectServices {
         },
       });
     } catch (error) {
-      return successHandler({
-        res,
-        msg:error as string
-      })
+      console.error("🔥 السـبـب الحقيقي للـ Error هـــو: ", error);
       throw error;
     }
   };
