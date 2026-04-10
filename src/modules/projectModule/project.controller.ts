@@ -29,9 +29,6 @@ router.post(
 router.post(
   routes.Image2Model,
   auth(),
-  (req, res) => {
-    res.status(200).json({ message: "test" });
-  },
   multer().array("images", 5),
   validationMiddleware(Image2ModelSchema),
   projectService.Image2Model,
