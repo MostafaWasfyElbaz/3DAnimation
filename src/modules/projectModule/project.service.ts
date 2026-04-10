@@ -251,6 +251,7 @@ export default class ProjectService implements IProjectServices {
     res: Response,
     next: NextFunction,
   ): Promise<Response> => {
+    console.log("test0")
     const { projectId }: getProjectByIdDTO = req.params as getProjectByIdDTO;
     const files = req.files as Express.Multer.File[];
     if (!files || files.length < 3 || files.length > 5) {
