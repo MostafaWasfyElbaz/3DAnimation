@@ -6,6 +6,7 @@ import {
   DeleteObjectCommandOutput,
   DeleteObjectCommand,
   DeleteObjectsCommand,
+  ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 import { StoreIn, IS3Services } from "../../common/index";
 import { createReadStream } from "fs";
@@ -73,8 +74,7 @@ export class S3Services implements IS3Services {
         ContentType: file.mimetype,
       },
     });
-    upload.on("httpUploadProgress", (progress) => {
-    });
+    upload.on("httpUploadProgress", (progress) => {});
     const { Key } = await upload.done();
     if (!Key) {
       throw new failedToUpload();
@@ -235,6 +235,30 @@ export class S3Services implements IS3Services {
       return signedUrl;
     } catch (error) {
       throw error;
+    }
+  };
+
+  deleteFolder = async ({
+    Bucket = process.env.AWS_BUCKET_NAME as string,
+    Prefix,
+  }: {
+    Bucket?: string;
+    Prefix: string;
+  }): Promise<void> => {
+    const listCommand = new ListObjectsV2Command({
+      Bucket,
+      Prefix,
+    });
+    const listedObjects = await s3Client().send(listCommand);
+    console.log(listedObjects)
+    if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
+      return;
+    }
+    const urls = listedObjects.Contents.map((obj) => obj.Key as string);
+    await this.deleteAssets({ Bucket, urls });
+
+    if (listedObjects.IsTruncated) {
+      await this.deleteFolder({ Bucket, Prefix });
     }
   };
 }

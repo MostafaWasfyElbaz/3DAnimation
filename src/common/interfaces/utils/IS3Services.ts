@@ -95,4 +95,11 @@ export interface IS3Services {
     Quiet?: boolean;
   }): Promise<DeleteObjectCommandOutput>;
   getModelUrl({ fileKey }: { fileKey: string }): Promise<string>;
+  deleteFolder({
+    Bucket,
+    Prefix,
+  }: {
+    Bucket?: string;
+    Prefix: string;
+  }): Promise<void>;
 }

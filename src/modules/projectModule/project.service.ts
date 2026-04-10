@@ -139,8 +139,8 @@ export default class ProjectService implements IProjectServices {
         throw new projectNotFound();
       }
       if (!res.locals.user.approved) {
-        await this.s3Services.deleteAssets({
-          urls: [`${res.locals.user._id}/${project.name}`],
+        await this.s3Services.deleteFolder({
+          Prefix: `${process.env.APP_NAME}/users/${res.locals.approved ? "approved" : "notApproved"}/${res.locals.user._id}/${project.name}/`,
         });
       }
 
@@ -151,6 +151,7 @@ export default class ProjectService implements IProjectServices {
       if (!isDeleted) {
         throw new projectNotFound();
       }
+
       return successHandler({
         res,
         msg: "Project deleted successfully",
@@ -249,7 +250,7 @@ export default class ProjectService implements IProjectServices {
       }
       const uploadedRawImages = await this.s3Services.uploadMultiFiles({
         files,
-        Path: `${res.locals.user._id}/${project.name}/raw-images`,
+        Path: `${res.locals.approved ? "approved" : "notApproved"}/${res.locals.user._id}/${project.name}/raw-images`,
       });
 
       if (!uploadedRawImages || uploadedRawImages.length !== files.length) {
@@ -267,7 +268,7 @@ export default class ProjectService implements IProjectServices {
           path: "",
           buffer: model,
         } as Express.Multer.File,
-        Path: `${res.locals.user._id}/${project.name}/models`,
+        Path: `${res.locals.approved ? "approved" : "notApproved"}/${res.locals.user._id}/${project.name}/models`,
       });
 
       if (!uploadedModel) {
