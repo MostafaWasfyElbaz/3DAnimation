@@ -7,6 +7,7 @@ import {
 } from "./project.validation";
 import ProjectService from "./project.service";
 import multer from "multer";
+import { uploadFile } from "../../utils";
 
 const routes = {
   createProject: "/",
@@ -29,7 +30,7 @@ router.post(
 router.post(
   routes.Image2Model,
   auth(),
-  multer().array("images", 5),
+  uploadFile({}).array("images", 5),
   validationMiddleware(Image2ModelSchema),
   projectService.Image2Model,
 );

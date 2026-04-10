@@ -1,22 +1,24 @@
 import mongoose, { Schema } from "mongoose";
-import { v4 as uuidv4 } from "uuid";
 import { IGeometry } from "../../common";
-import { string } from "zod";
 
 export const geometrySchema = new Schema<IGeometry>(
   {
-    isObject3D: { type: Boolean, default: true },
+    isObject3D: { type: Boolean, required: true, default: true },
     uuid: {
-      type: uuidv4,
+      type: String,
       required: true,
-      unique: true,
+      minlength: 36,
+      maxlength: 36,
     },
+
     name: {
       type: String,
+      required: true,
       default: "Unnamed 3D Object",
     },
     type: {
       type: String,
+      required: true,
       default: "Mesh",
     },
 
