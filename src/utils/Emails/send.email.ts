@@ -1,4 +1,3 @@
-import nodemailer from "nodemailer";
 import { google } from "googleapis";
 
 export const sendEmail = async (
@@ -18,25 +17,30 @@ export const sendEmail = async (
       refresh_token: process.env.OAUTH_REFRESH_TOKEN as string,
     });
 
-    const accessToken = (await oAuth2Client.getAccessToken()).token;
+    const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
+    const encodedSubject = `=?utf-8?B?${Buffer.from(subject).toString("base64")}?=`;
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        type: "OAuth2",
-        user: process.env.EMAIL_USER as string,
-        clientId: process.env.OAUTH_CLIENT_ID as string,
-        clientSecret: process.env.OAUTH_CLIENT_SECRET as string,
-        refreshToken: process.env.OAUTH_REFRESH_TOKEN as string,
-        accessToken: accessToken as string,
+    const rawMessage = [
+      `To: ${email}`,
+      `From: 3DAnimation <${process.env.EMAIL_USER}>`,
+      `Subject: ${encodedSubject}`,
+      `MIME-Version: 1.0`,
+      `Content-Type: text/html; charset=utf-8`,
+      ``,
+      html,
+    ].join("\n");
+
+    const encodedMessage = Buffer.from(rawMessage)
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+
+    await gmail.users.messages.send({
+      userId: "me",
+      requestBody: {
+        raw: encodedMessage,
       },
-    } as any);
-
-    await transporter.sendMail({
-      from: `3DAnimation <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: subject,
-      html: html,
     });
   } catch (error) {
     throw error;
