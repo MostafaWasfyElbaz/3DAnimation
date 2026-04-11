@@ -9,51 +9,54 @@ const otpSchema = new Schema<IOtp>({
   request: { count: { type: Number, default: 0 }, banExp: { type: Date } },
 });
 
-const usersSchema = new Schema<IUser>({
-  firstName: {
-    type: String,
-    required: [true, "Name is required"],
+const usersSchema = new Schema<IUser>(
+  {
+    firstName: {
+      type: String,
+      required: [true, "Name is required"],
+    },
+    lastName: {
+      type: String,
+      required: [true, "Name is required"],
+    },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+    },
+    tempEmail: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+    },
+    emailOtp: otpSchema,
+    passwordOtp: otpSchema,
+    tempEmailOtp: otpSchema,
+    isConfirmed: {
+      type: Boolean,
+      default: false,
+    },
+    changedCredentialsAt: Date,
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedAt: Date,
+    deletedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    approved: {
+      type: Boolean,
+      default: false,
+    },
   },
-  lastName: {
-    type: String,
-    required: [true, "Name is required"],
-  },
-  email: {
-    type: String,
-    required: [true, "Email is required"],
-    unique: true,
-  },
-  tempEmail: {
-    type: String,
-    unique: true,
-    sparse: true,
-  },
-  password: {
-    type: String,
-    required: [true, "Password is required"],
-  },
-  emailOtp: otpSchema,
-  passwordOtp: otpSchema,
-  tempEmailOtp: otpSchema,
-  isConfirmed: {
-    type: Boolean,
-    default: false,
-  },
-  changedCredentialsAt: Date,
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-  deletedAt: Date,
-  deletedBy: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
-  approved: {
-    type: Boolean,
-    default: false,
-  },
-});
+  { timestamps: true },
+);
 
 usersSchema.pre(
   "save",
@@ -114,7 +117,7 @@ usersSchema.post("save", async function (doc, next) {
   const that = this as HydratedDocument<IUser> & { wasNew: boolean };
   if (that.wasNew) {
     const otp = generateOTP();
-    emailEmitter.publish(Events.confirmEmail, {
+    await emailEmitter.publish(Events.confirmEmail, {
       to: that.email,
       subject: "Confirm Email",
       html: template(

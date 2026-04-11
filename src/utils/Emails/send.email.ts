@@ -16,13 +16,12 @@ export const sendEmail = async (
   });
 
   const main = async () => {
-    const mail = await transporter.sendMail({
+    await transporter.sendMail({
       from: `Social App <${process.env.EMAIL_USER}>`,
       to: email,
       subject: subject,
       html: html,
     });
-    console.log(mail);
   };
   main().catch((err) => {
     throw err;
