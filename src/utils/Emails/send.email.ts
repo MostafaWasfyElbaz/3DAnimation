@@ -6,14 +6,15 @@ export const sendEmail = async (
   html: string,
 ) => {
   const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT),
+    host: process.env.EMAIL_HOST as string,
+    port: Number(process.env.EMAIL_PORT) as number,
     secure: true,
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: process.env.EMAIL_USER as string,
+      pass: process.env.EMAIL_PASS as string,
     },
-  });
+    family: 4,
+  } as any);
 
   const main = async () => {
     await transporter.sendMail({
