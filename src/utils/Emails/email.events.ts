@@ -10,8 +10,7 @@ class EmailEvents {
   };
 
   publish = async (event: Events, payload: any) => {
-    const mail = this.emitter.emit(event, payload);
-    console.log(mail);
+    this.emitter.emit(event, payload);
   };
 }
 
