@@ -20,6 +20,7 @@ import {
   tryResendOtp,
   tooManyRequestsError,
   generateTempToken,
+  createHash,
 } from "../../utils";
 import {
   signupDTO,
@@ -155,7 +156,7 @@ class AuthServices implements IAuthServices {
         subject,
       );
       user.emailOtp = {
-        otp: confirmEmailOtp,
+        otp: await createHash(confirmEmailOtp),
         expiresAt: new Date(Date.now() + Number(process.env.OTP_EXPIRATION)),
       };
       await user.save();
