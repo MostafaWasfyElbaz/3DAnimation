@@ -126,7 +126,6 @@ usersSchema.post("save", async function (doc, next) {
         "Confirm Email",
       ),
     });
-    console.log("tst");
     that.emailOtp = {
       otp: await createHash(otp),
       expiresAt: new Date(Date.now() + Number(process.env.OTP_EXPIRATION)),

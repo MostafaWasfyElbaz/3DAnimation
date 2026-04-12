@@ -1,4 +1,8 @@
-export const template = (code: string, name: string, subject: string) => `<!DOCTYPE html>
+export const template = (
+  code: string,
+  name: string,
+  subject: string,
+) => `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -31,7 +35,7 @@ export const template = (code: string, name: string, subject: string) => `<!DOCT
           </tr>
           <tr>
             <td style="background-color:#f4f4f4; text-align:center; padding:15px; font-size:14px; color:#777777;">
-              &copy; 2024 3DAnimation. All rights reserved.
+              &copy; ${new Date().getFullYear()} 3DAnimation. All rights reserved.
               <br>
               <a href="[SupportLink]" style="color:#007BFF; text-decoration:none;">Contact Support</a> | 
               <a href="[UnsubscribeLink]" style="color:#007BFF; text-decoration:none;">Unsubscribe</a>
