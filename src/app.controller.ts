@@ -35,7 +35,7 @@ export const bootstrap = async (): Promise<void> => {
   app.use(express.json());
   await DBConnection();
   app.use("/api/v1", baseRouter);
-  app.use("/{*dummy}", (req: Request, res: Response) => {
+  app.use((req: Request, res: Response) => {
     throw new pageNotFoundError();
   });
   app.use(
