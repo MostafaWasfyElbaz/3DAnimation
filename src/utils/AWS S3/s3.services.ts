@@ -222,7 +222,13 @@ export class S3Services implements IS3Services {
     return await s3Client().send(command);
   };
 
-  getModelUrl = async ({ fileKey }: { fileKey: string }) => {
+  getModelUrl = async ({
+    fileKey,
+    expiresIn = 120,
+  }: {
+    fileKey: string;
+    expiresIn?: number;
+  }) => {
     const command = new GetObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME as string,
       Key: fileKey,
@@ -230,7 +236,7 @@ export class S3Services implements IS3Services {
 
     try {
       const signedUrl = await getSignedUrl(s3Client(), command, {
-        expiresIn: 120,
+        expiresIn,
       });
       return signedUrl;
     } catch (error) {
@@ -250,7 +256,7 @@ export class S3Services implements IS3Services {
       Prefix,
     });
     const listedObjects = await s3Client().send(listCommand);
-    console.log(listedObjects)
+    console.log(listedObjects);
     if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
       return;
     }
