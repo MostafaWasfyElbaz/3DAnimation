@@ -7,46 +7,49 @@ export interface IAuthServices {
   confirmEmail(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response>;
   resendEmailOtp(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response>;
   login(req: Request, res: Response, next: NextFunction): Promise<Response>;
   refreshToken(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response>;
   forgotPassword(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response>;
   resetPassword(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response>;
   updateEmail(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response>;
   confirmEmailChange(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response>;
   resendUpdateEmailOtp(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response>;
-  rateLimit(
-    model: HydratedDocument<IUser>,
-    schema: any
-  ): Promise<void>;
+  rateLimit(model: HydratedDocument<IUser>, schema: any): Promise<void>;
+  getUserProfile(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response>;
+  logOut(req: Request, res: Response, next: NextFunction): Promise<Response>;
 }

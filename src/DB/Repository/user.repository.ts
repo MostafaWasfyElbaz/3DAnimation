@@ -1,6 +1,6 @@
 import DBRepository from "../Repository/db.repository";
 import { IUser, IUserRepo } from "../../common";
-import { HydratedDocument, Model } from "mongoose";
+import { HydratedDocument, Model, UpdateQuery } from "mongoose";
 import { userExistError } from "../../utils";
 import { User } from "../models/user.model";
 
@@ -12,7 +12,7 @@ export default class UserRepository
     super(model);
   }
   findUserByEmail = async (
-    email: string
+    email: string,
   ): Promise<HydratedDocument<IUser> | null> => {
     const user = await this.findOne({ filter: { email } });
     return user;
@@ -29,5 +29,29 @@ export default class UserRepository
     }
     const [createdUser] = await this.create({ data: [user] });
     return createdUser as HydratedDocument<IUser>;
+  };
+
+  findUserByID = async (
+    id: string,
+  ): Promise<HydratedDocument<IUser> | null> => {
+    const user = await this.findOne({
+      filter: { _id: id },
+      projection: { firstName: 1, lastName: 1, email: 1, _id: 0 },
+    });
+    if (!user) {
+      return null;
+    }
+    return user;
+  };
+
+  logout = async (id: string): Promise<UpdateQuery<IUser> | null> => {
+    const user = await this.updateOne({
+      filter: { _id: id },
+      data: { $set: { changedCredentialsAt: new Date() } },
+    });
+    if (user.modifiedCount === 0) {
+      return null;
+    }
+    return user;
   };
 }

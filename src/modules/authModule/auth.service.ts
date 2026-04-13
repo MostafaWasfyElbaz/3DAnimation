@@ -21,6 +21,7 @@ import {
   tooManyRequestsError,
   generateTempToken,
   createHash,
+  userNotFound,
 } from "../../utils";
 import {
   signupDTO,
@@ -382,6 +383,24 @@ class AuthServices implements IAuthServices {
     }
   };
 
+  getUserProfile = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response> => {
+    const user = res.locals.user;
+    const userProfile = await this.userRepo.findUserByID(user._id);
+    if (!userProfile) {
+      throw new userNotFound();
+    }
+
+    return successHandler({
+      res,
+      msg: "User profile fetched successfully",
+      data: userProfile,
+    });
+  };
+
   resendUpdateEmailOtp = async (
     req: Request,
     res: Response,
@@ -391,6 +410,22 @@ class AuthServices implements IAuthServices {
       res,
       msg: "Email Otp Resent Successfully",
       status: 200,
+    });
+  };
+
+  logOut = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response> => {
+    const user = res.locals.user;
+    const loggedOutUser = this.userRepo.logout(user._id);
+    if (!loggedOutUser) {
+      throw new invalidCredentialsError();
+    }
+    return successHandler({
+      res,
+      msg: "User logged out successfully",
     });
   };
 }

@@ -27,55 +27,60 @@ const routes = {
   resetPassword: "/reset-password",
   updateEmail: "/update-email",
   confirmEmailChange: "/confirm-email-change",
+  getUserProfile: "/me",
+  logOut: "/logout",
 };
 
+router.get(routes.getUserProfile, auth(), authServices.getUserProfile);
+
+router.post(routes.logOut, auth(), authServices.logOut);
 router.post(
   routes.signup,
   validationMiddleware(signupSchema),
-  authServices.signup
+  authServices.signup,
 );
 router.post(
   routes.login,
   validationMiddleware(loginSchema),
-  authServices.login
+  authServices.login,
 );
 router.post(routes.refreshToken, authServices.refreshToken);
 
 router.patch(
   routes.confirmEmail,
   validationMiddleware(confirmEmailSchema),
-  authServices.confirmEmail
+  authServices.confirmEmail,
 );
 router.patch(
   routes.resendEmailOtp,
   validationMiddleware(resendEmailOtpSchema),
-  authServices.resendEmailOtp
+  authServices.resendEmailOtp,
 );
 router.patch(
   routes.resendUpdateEmailOtp,
   validationMiddleware(resendUpdateEmailOtpSchema),
-  authServices.resendUpdateEmailOtp
+  authServices.resendUpdateEmailOtp,
 );
 router.patch(
   routes.forgotPassword,
   validationMiddleware(forgotPasswordSchema),
-  authServices.forgotPassword
+  authServices.forgotPassword,
 );
 router.patch(
   routes.resetPassword,
   validationMiddleware(resetPasswordSchema),
-  authServices.resetPassword
+  authServices.resetPassword,
 );
 router.patch(
   routes.updateEmail,
   auth(),
   validationMiddleware(updateEmailSchema),
-  authServices.updateEmail
+  authServices.updateEmail,
 );
 router.patch(
   routes.confirmEmailChange,
   auth(),
   validationMiddleware(confirmEmailChangeSchema),
-  authServices.confirmEmailChange
+  authServices.confirmEmailChange,
 );
 export default router;
