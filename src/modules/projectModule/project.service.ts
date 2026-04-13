@@ -276,7 +276,7 @@ export default class ProjectService implements IProjectServices {
       }
       const getGlbFile = await this.s3Services.getModelUrl({
         fileKey: uploadedModel,
-        expiresIn: 600,
+        expiresIn: 1200,
       });
 
       if (!getGlbFile) {
