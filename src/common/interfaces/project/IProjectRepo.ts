@@ -38,10 +38,11 @@ export interface IProjectRepo {
     data: {
       projectName?: string;
       geometries?: IGeometry[];
+      models?: IModel[];
     };
     userId: string;
-    toDelete?: { _id: string }[];
-  }): Promise<UpdateResult | null>;
+    toDelete?: { _id: string; url: string }[];
+  }): Promise<HydratedDocument<IProject> | null>;
 
   createModel({
     projectId,

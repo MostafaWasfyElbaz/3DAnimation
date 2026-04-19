@@ -127,27 +127,34 @@ export default class ProjectRepository
     data: {
       projectName?: string;
       geometries?: IGeometry[];
+      models?: IModel[];
     };
     userId: string;
-    toDelete?: { _id: string }[];
-  }): Promise<UpdateResult | null> => {
-    const updatedProject = await this.updateOne({
-      filter: { _id: projectId, userId },
-      data: {
-        name: data.projectName,
-        $set: { geometries: [] },
-        geometries: data.geometries,
-        $pull: {
-          models: {
-            _id: { $in: toDelete?.map((m) => new Types.ObjectId(m._id)) },
-          },
-        },
-      },
-      options: { new: true },
-    });
-    if (!updatedProject) {
+    toDelete?: { _id: string; url: string }[];
+  }): Promise<HydratedDocument<IProject> | null> => {
+    const project = await this.findOne({ filter: { _id: projectId, userId } });
+
+    if (!project) {
       return null;
     }
-    return updatedProject;
+    if (data.projectName) project.name = data.projectName;
+    if (data.geometries) project.geometries = data.geometries;
+    if (toDelete && toDelete.length > 0 && project.models) {
+      const idsToDelete = toDelete.map((m) => new Types.ObjectId(m._id));
+      (project.models as any).pull(...idsToDelete);
+    }
+    if (data.models && data.models.length > 0 && project.models) {
+      for (const item of data.models) {
+        const modelToUpdate = project.models.find(
+          (model: any) => model._id.toString() === item._id,
+        );
+        if (modelToUpdate) {
+          modelToUpdate.attributes = item.attributes;
+        }
+      }
+    }
+    await project.save();
+
+    return project;
   };
 }

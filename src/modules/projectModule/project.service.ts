@@ -39,7 +39,11 @@ export default class ProjectService implements IProjectServices {
         userId: user._id,
       });
 
-      if (!project?.id || !project?.name) {
+      if (!project) {
+        throw new projectCreationFailed("dublicate name", 400);
+      }
+
+      if (!project.id || !project.name) {
         throw new projectCreationFailed();
       }
 
@@ -72,11 +76,19 @@ export default class ProjectService implements IProjectServices {
       if (project?.models) {
         const models = await Promise.all(
           projectData.models.map(
-            async (model: { _id: string; modelUrl: string }) => {
+            async (model: {
+              _id: string;
+              modelUrl: string;
+              attributes: any;
+            }) => {
               const preSignedModel = await this.s3Services.getModelUrl({
                 fileKey: model.modelUrl,
               });
-              return { _id: model._id, modelUrl: preSignedModel };
+              return {
+                _id: model._id,
+                modelUrl: preSignedModel,
+                attributes: model.attributes,
+              };
             },
           ),
         );
@@ -90,7 +102,7 @@ export default class ProjectService implements IProjectServices {
         data: { project: projectData },
       });
     } catch (error) {
-      throw next(error);
+      throw error;
     }
   };
 
@@ -103,14 +115,7 @@ export default class ProjectService implements IProjectServices {
       const projects = await this.projectRepo.getAllProjects({
         userId: res.locals.user._id,
       });
-      if (!projects) {
-        successHandler({
-          res,
-          msg: "No projects found",
-          status: 200,
-          data: { projects: [] },
-        });
-      }
+
       return successHandler({
         res,
         msg: "Projects fetched successfully",
@@ -118,8 +123,7 @@ export default class ProjectService implements IProjectServices {
         data: { projects },
       });
     } catch (error) {
-      next(error);
-      return res;
+      throw new internalServerError();
     }
   };
 
@@ -130,6 +134,7 @@ export default class ProjectService implements IProjectServices {
   ): Promise<Response> => {
     const { projectId }: deleteProjectDTO =
       req.params as unknown as deleteProjectDTO;
+    const user = res.locals.user;
     try {
       const project = await this.projectRepo.getProjectById({
         projectId: projectId,
@@ -138,9 +143,9 @@ export default class ProjectService implements IProjectServices {
       if (!project) {
         throw new projectNotFound();
       }
-      if (!res.locals.user.approved) {
+      if (!user.approved) {
         await this.s3Services.deleteFolder({
-          Prefix: `${process.env.APP_NAME}/users/${res.locals.approved ? "approved" : "notApproved"}/${res.locals.user._id}/${project.name}/`,
+          Prefix: `${process.env.APP_NAME}/users/${user.approved ? "approved" : "notApproved"}/${res.locals.user._id}/${project.name}/`,
         });
       }
 
@@ -149,7 +154,7 @@ export default class ProjectService implements IProjectServices {
         userId: res.locals.user._id,
       });
       if (!isDeleted) {
-        throw new projectNotFound();
+        throw new projectNotFound("Failed to delete project", 400);
       }
 
       return successHandler({
@@ -171,6 +176,25 @@ export default class ProjectService implements IProjectServices {
     const { projectId }: getProjectByIdDTO = req.params as getProjectByIdDTO;
     const { geometries, projectName, models }: updateProjectDTO = req.body;
     const user = res.locals.user;
+    const toDelete = [];
+    const data = {};
+
+    if (!models && !geometries && !projectName) {
+      return successHandler({
+        res,
+        msg: "No changes made to the project",
+      });
+    }
+    if (projectName) {
+      Object.assign(data, { projectName });
+    }
+    if (geometries) {
+      Object.assign(data, { geometries });
+    }
+    if (models) {
+      Object.assign(data, { models });
+    }
+
     const project = await this.projectRepo.getProjectById({
       projectId: projectId,
       userId: res.locals.user._id,
@@ -178,32 +202,25 @@ export default class ProjectService implements IProjectServices {
     if (!project) {
       throw new projectNotFound();
     }
+
     const existingModels = project?.models?.map((model) => ({
       _id: model._id.toString(),
+      url: model.modelUrl,
     }));
-    const toDelete = [];
-    const data = {};
-    if (projectName) {
-      Object.assign(data, { projectName });
-    }
-    if (geometries) {
-      Object.assign(data, { geometries });
-    }
-    if (!models && !geometries && !projectName) {
-      return successHandler({
-        res,
-        msg: "No changes made to the project",
-      });
-    }
+
     if (models && existingModels) {
       toDelete.push(
         ...existingModels.filter(
-          (model) => !models.some((id) => id === model._id.toString()),
+          (model) => !models.some((m) => m._id === model._id.toString()),
         ),
       );
     }
-
     try {
+      if (!user.approved && toDelete.length > 0) {
+        await this.s3Services.deleteAssets({
+          urls: toDelete.map((model) => model.url),
+        });
+      }
       const updatedProject = await this.projectRepo.updateProject({
         projectId: projectId,
         userId: user._id,
@@ -211,16 +228,15 @@ export default class ProjectService implements IProjectServices {
         toDelete,
       });
       if (!updatedProject) {
-        throw new projectNotFound();
+        throw new projectNotFound("Failed to update project", 400);
       }
       return successHandler({
         res,
         msg: "Project updated successfully",
         status: 200,
-        data: { project: updatedProject },
       });
     } catch (error) {
-      throw new internalServerError();
+      throw error;
     }
   };
 
@@ -290,7 +306,6 @@ export default class ProjectService implements IProjectServices {
           rawImagesUrls: uploadedRawImages,
         },
       });
-
       if (!saveModel) {
         throw new internalServerError("Failed to save model to database.");
       }
@@ -299,9 +314,9 @@ export default class ProjectService implements IProjectServices {
         msg: "Model created successfully",
         status: 200,
         data: {
-          _id: saveModel.models
-            ? saveModel?.models[saveModel?.models.length - 1]?._id
-            : "",
+          _id: saveModel?.models?.[
+            saveModel?.models?.length - 1
+          ]?._id.toString(),
           modelUrl: getGlbFile,
         },
       });

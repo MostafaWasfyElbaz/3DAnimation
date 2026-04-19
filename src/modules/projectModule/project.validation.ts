@@ -19,7 +19,6 @@ export const Image2ModelSchema = z.object({
 });
 
 const geometrySchema = z.object({
-  isObject3D: z.boolean().optional(),
   uuid: z.uuid().optional(),
   name: z.string().optional(),
   type: z.string().optional(),
@@ -31,5 +30,12 @@ const geometrySchema = z.object({
 export const updateProjectSchema = z.object({
   geometries: z.array(geometrySchema).optional() as z.ZodType<IGeometry[]>,
   projectName: generalValidation.name.optional(),
-  models: z.array(generalValidation.id).optional(),
+  models: z
+    .array(
+      z.object({
+        _id: generalValidation.id,
+        attributes: z.any(),
+      }),
+    )
+    .optional(),
 });
