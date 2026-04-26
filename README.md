@@ -126,10 +126,6 @@ EMAIL_USER=...
 Notes:
 
 - `MONGO_URL` is preferred; `URI` is used as fallback.
-- Token expiry is currently hardcoded in `src/utils/jwt.ts`:
-  - access token: `120 S`
-  - temp token: `300 S`
-  - refresh token: `7 D`
 
 ## Build and Run
 
