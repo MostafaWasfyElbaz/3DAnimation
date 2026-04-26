@@ -1,4 +1,4 @@
-import jwt, { Secret } from "jsonwebtoken";
+import jwt, { Secret, SignOptions } from "jsonwebtoken";
 import { nanoid } from "nanoid";
 import { IPayload } from "../common";
 
@@ -20,19 +20,12 @@ export const generateAccessToken = ({
   payload: string | object;
   jwtid: string;
 }): string => {
-  return jwt.sign(payload, process.env.ACCESS_SIGNITURE as string, {
-    expiresIn: "120 S",
+  return jwt.sign(payload, process.env.ACCESS_SIGNITURE as Secret, {
+    expiresIn:
+      process.env.ACCESS_TOKEN_EXPIRATION as NonNullable<
+        SignOptions["expiresIn"]
+      >,
     jwtid,
-  });
-};
-
-export const generateTempToken = ({
-  payload,
-}: {
-  payload: string | object;
-}): string => {
-  return jwt.sign(payload, process.env.TEMP_SIGNITURE as string, {
-    expiresIn: "300 S",
   });
 };
 
@@ -43,8 +36,11 @@ export const generateRefreshToken = ({
   payload: string | object;
   jwtid: string;
 }): string => {
-  return jwt.sign(payload, process.env.REFRESH_SIGNITURE as string, {
-    expiresIn: "7 D",
+  return jwt.sign(payload, process.env.REFRESH_SIGNITURE as Secret, {
+    expiresIn:
+      process.env.REFRESH_TOKEN_EXPIRATION as NonNullable<
+        SignOptions["expiresIn"]
+      >,
     jwtid,
   });
 };

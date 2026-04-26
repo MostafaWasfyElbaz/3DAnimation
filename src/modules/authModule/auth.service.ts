@@ -19,7 +19,6 @@ import {
   userExistError,
   tryResendOtp,
   tooManyRequestsError,
-  generateTempToken,
   createHash,
   userNotFound,
 } from "../../utils";
