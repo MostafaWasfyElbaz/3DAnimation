@@ -26,6 +26,35 @@ export default class ProjectService implements IProjectServices {
     this.s3Services = new S3Services();
   }
 
+  private uploadModelToS3 = async ({
+    model,
+    userId,
+    projectName,
+    isApproved,
+  }: {
+    model: Buffer;
+    userId: string;
+    projectName: string;
+    isApproved: boolean;
+  }): Promise<string> => {
+    const uploadedModel = await this.s3Services.uploadSingleFile({
+      file: {
+        fieldname: "model",
+        originalname: "generated-model.glb",
+        encoding: "7bit",
+        mimetype: "model/gltf-binary",
+        size: model.length,
+        destination: "",
+        filename: "",
+        path: "",
+        buffer: model,
+      } as Express.Multer.File,
+      Path: `${isApproved ? "approved" : "notApproved"}/${userId}/${projectName}/models`,
+    });
+
+    return uploadedModel;
+  };
+
   createProject = async (
     req: Request,
     res: Response,
@@ -265,6 +294,18 @@ export default class ProjectService implements IProjectServices {
       if (!model) {
         throw new modelCreationFailed();
       }
+
+      const uploadedModel = await this.uploadModelToS3({
+        model,
+        userId: res.locals.user._id,
+        projectName: project.name,
+        isApproved: res.locals.approved,
+      });
+
+      if (!uploadedModel) {
+        throw new internalServerError("Failed to upload model to S3.");
+      }
+
       const uploadedRawImages = await this.s3Services.uploadMultiFiles({
         files,
         Path: `${res.locals.approved ? "approved" : "notApproved"}/${res.locals.user._id}/${project.name}/raw-images`,
@@ -273,24 +314,7 @@ export default class ProjectService implements IProjectServices {
       if (!uploadedRawImages || uploadedRawImages.length !== files.length) {
         throw new internalServerError("Failed to upload raw images to S3.");
       }
-      const uploadedModel = await this.s3Services.uploadSingleFile({
-        file: {
-          fieldname: "model",
-          originalname: "generated-model.glb",
-          encoding: "7bit",
-          mimetype: "model/gltf-binary",
-          size: model.length,
-          destination: "",
-          filename: "",
-          path: "",
-          buffer: model,
-        } as Express.Multer.File,
-        Path: `${res.locals.approved ? "approved" : "notApproved"}/${res.locals.user._id}/${project.name}/models`,
-      });
 
-      if (!uploadedModel) {
-        throw new internalServerError("Failed to upload model to S3.");
-      }
       const getGlbFile = await this.s3Services.getModelUrl({
         fileKey: uploadedModel,
         expiresIn: 1200,
@@ -346,19 +370,11 @@ export default class ProjectService implements IProjectServices {
         throw new modelCreationFailed();
       }
 
-      const uploadedModel = await this.s3Services.uploadSingleFile({
-        file: {
-          fieldname: "model",
-          originalname: "generated-model.glb",
-          encoding: "7bit",
-          mimetype: "model/gltf-binary",
-          size: model.length,
-          destination: "",
-          filename: "",
-          path: "",
-          buffer: model,
-        } as Express.Multer.File,
-        Path: `${res.locals.approved ? "approved" : "notApproved"}/${res.locals.user._id}/${project.name}/models`,
+      const uploadedModel = await this.uploadModelToS3({
+        model,
+        userId: res.locals.user._id,
+        projectName: project.name,
+        isApproved: res.locals.approved,
       });
 
       if (!uploadedModel) {
@@ -417,24 +433,18 @@ export default class ProjectService implements IProjectServices {
       if (!project) {
         throw new projectNotFound();
       }
-      const uploadedModel = await this.s3Services.uploadSingleFile({
-        file: {
-          fieldname: "model",
-          originalname: "generated-model.glb",
-          encoding: "7bit",
-          mimetype: "model/gltf-binary",
-          size: files[0]?.size,
-          destination: "",
-          filename: "",
-          path: "",
-          buffer: files[0]?.buffer,
-        } as Express.Multer.File,
-        Path: `${res.locals.approved ? "approved" : "notApproved"}/${res.locals.user._id}/${project.name}/models`,
+
+      const model = files[0]!.buffer;
+      const uploadedModel = await this.uploadModelToS3({
+        model,
+        userId: res.locals.user._id,
+        projectName: project.name,
+        isApproved: res.locals.approved,
       });
+
       if (!uploadedModel) {
         throw new internalServerError("Failed to upload model to S3.");
       }
-
       const saveModel = await this.projectRepo.createModel({
         projectId,
         userId: res.locals.user._id,
