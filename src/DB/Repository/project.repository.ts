@@ -2,8 +2,6 @@ import {
   Model,
   HydratedDocument,
   Types,
-  UpdateResult,
-  UpdateQuery,
 } from "mongoose";
 import { IProject, IProjectRepo, IGeometry, IModel } from "../../common";
 import DBRepository from "./db.repository";

@@ -247,9 +247,9 @@ export default class ProjectService implements IProjectServices {
   ): Promise<Response> => {
     const { projectId }: getProjectByIdDTO = req.params as getProjectByIdDTO;
     const files = req.files as Express.Multer.File[];
-    if (!files || files.length < 3 || files.length > 5) {
+    if (!files || files.length !== 5) {
       return res.status(400).json({
-        message: "Please upload between 3 and 5 images.",
+        message: "Please upload exactly 5 images.",
       });
     }
     try {

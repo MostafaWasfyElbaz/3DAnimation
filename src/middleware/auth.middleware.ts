@@ -1,7 +1,6 @@
 import {
   verifyToken,
   invalidCredentialsError,
-  notFoundError,
   userNotConfirmedError,
 } from "../utils/index";
 import { IUser, TokenType, IPayload } from "../common/index";

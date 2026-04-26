@@ -4,7 +4,28 @@ export interface IGeometry {
   uuid: UUIDTypes;
   name: string;
   type: string;
-  attributes: any;
+  parameters: any;
+  position: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  rotation: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  scale: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  color: {
+    r: number;
+    g: number;
+    b: number;
+  };
+  opacity: number;
   createdAt: Date;
   updatedAt: Date;
 }

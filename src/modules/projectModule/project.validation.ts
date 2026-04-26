@@ -15,14 +15,43 @@ export const deleteProjectSchema = z.object({
 });
 
 export const Image2ModelSchema = z.object({
-  files: generalValidation.files({ fieldName: "images" }).min(3).max(5),
+  files: generalValidation.files({ fieldName: "images" }).min(5).max(5),
 });
 
 const geometrySchema = z.object({
   uuid: z.uuid().optional(),
   name: z.string().optional(),
   type: z.string().optional(),
-  attributes: z.any(),
+  parameters: z.any().optional(),
+  position: z
+    .object({
+      x: z.number().optional(),
+      y: z.number().optional(),
+      z: z.number().optional(),
+    })
+    .optional(),
+  rotation: z
+    .object({
+      x: z.number().optional(),
+      y: z.number().optional(),
+      z: z.number().optional(),
+    })
+    .optional(),
+  scale: z
+    .object({
+      x: z.number().optional(),
+      y: z.number().optional(),
+      z: z.number().optional(),
+    })
+    .optional(),
+  color: z
+    .object({
+      r: z.number().optional(),
+      g: z.number().optional(),
+      b: z.number().optional(),
+    })
+    .optional(),
+  opacity: z.number().optional(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 });

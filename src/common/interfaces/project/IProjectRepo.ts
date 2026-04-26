@@ -1,4 +1,4 @@
-import { HydratedDocument, UpdateResult } from "mongoose";
+import { HydratedDocument } from "mongoose";
 import { IProject } from "./IProject";
 import { IModel } from "./IModel";
 import { IGeometry } from "../..";

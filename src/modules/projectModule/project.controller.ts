@@ -6,7 +6,6 @@ import {
   updateProjectSchema,
 } from "./project.validation";
 import ProjectService from "./project.service";
-import multer from "multer";
 import { uploadFile } from "../../utils";
 
 const routes = {

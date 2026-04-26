@@ -8,7 +8,7 @@ export async function generateModel({
 }) {
   const form = new FormData();
 
-  if (files.length === 0 || files.length < 3 || files.length > 5) {
+  if (!files || files.length !== 5) {
     return null;
   }
 
@@ -23,6 +23,7 @@ export async function generateModel({
   try {
     const res: AxiosResponse<Buffer> = await axios.post(
       "https://mostafa-wasfy-elbaz-3danimationai.hf.space/predict",
+      // "http://127.0.0.1:8000/predict",
       form,
       {
         headers: {
