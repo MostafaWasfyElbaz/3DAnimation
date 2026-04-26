@@ -245,8 +245,8 @@ Model/file validation details:
 
 - Image accepted mime types: `image/png`, `image/jpg`, `image/jpeg`
 - GLB accepted mime types by schema: `model/gltf-binary`, `model/gltf+json`
-- Multer hard limit in code: max 10MB per file, max 5 files (`src/utils/AWS S3/multer.ts`)
-- Additional Zod file size rule exists (50MB), but multer 10MB limit is enforced first
+- Multer hard limit in code: max 50MB per file, max 5 files (`src/utils/AWS S3/multer.ts`)
+- Additional Zod file size rule exists (50MB), but multer 50MB limit is enforced first
 
 ## 3D Generation Flow
 
