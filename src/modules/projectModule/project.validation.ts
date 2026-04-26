@@ -1,6 +1,6 @@
 import z from "zod";
 import { generalValidation } from "../../utils";
-import { IGeometry } from "../../common";
+import { IGeometry, Model } from "../../common";
 
 export const createProjectSchema = z.object({
   name: generalValidation.name,
@@ -68,4 +68,14 @@ export const updateProjectSchema = z.object({
       }),
     )
     .optional(),
+});
+
+export const text2ModelSchema = z.object({
+  prompt: z.string().min(1).max(500),
+});
+
+export const uploadGlbSchema = z.object({
+  files: generalValidation
+    .files({ fieldName: "model", Types: Object.values(Model) })
+    .max(1),
 });

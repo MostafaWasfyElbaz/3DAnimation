@@ -12,7 +12,7 @@ export const generalValidation = {
   otp: z.string().min(6, "OTP must be at least 6 characters long"),
   files: ({
     Types = Object.values(Images),
-    fieldName ,
+    fieldName,
   }: {
     Types?: string[];
     fieldName?: string;
@@ -42,7 +42,7 @@ export const generalValidation = {
       )
       .min(1, `At least one file is required`);
   },
+  id: z.string().length(24, "Invalid ID format"),
   ContentType: z.enum(Images),
   Originalname: z.string(),
-  id: z.string().length(24),
 };

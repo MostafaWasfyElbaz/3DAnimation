@@ -36,4 +36,11 @@ export interface IProjectServices {
     res: Response,
     next: NextFunction,
   ): Promise<Response>;
+
+  text2Model(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response>;
+  uploadGlb(req: Request, res: Response, next: NextFunction): Promise<Response>;
 }

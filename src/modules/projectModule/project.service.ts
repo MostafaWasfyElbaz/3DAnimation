@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { IProjectServices } from "../../common";
+import { IProjectServices, ModelType } from "../../common";
 import { ProjectRepository } from "../../DB";
 import {
   createProjectDTO,
   deleteProjectDTO,
   getProjectByIdDTO,
+  text2ModelDTO,
   updateProjectDTO,
 } from "./project.dto";
 import {
@@ -15,7 +16,7 @@ import {
   S3Services,
   successHandler,
 } from "../../utils";
-import { generateModel } from "../../utils/image2model";
+import { generateModel } from "../../utils/generateModel";
 
 export default class ProjectService implements IProjectServices {
   private projectRepo: ProjectRepository;
@@ -260,7 +261,7 @@ export default class ProjectService implements IProjectServices {
       if (!project) {
         throw new projectNotFound();
       }
-      const model = await generateModel({ files });
+      const model = await generateModel({ files, type: ModelType.Image });
       if (!model) {
         throw new modelCreationFailed();
       }
@@ -319,6 +320,136 @@ export default class ProjectService implements IProjectServices {
           ]?._id.toString(),
           modelUrl: getGlbFile,
         },
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  text2Model = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response> => {
+    const { projectId }: getProjectByIdDTO = req.params as getProjectByIdDTO;
+    const { prompt } = req.body as text2ModelDTO;
+    try {
+      const project = await this.projectRepo.getProjectById({
+        projectId,
+        userId: res.locals.user._id,
+      });
+      if (!project) {
+        throw new projectNotFound();
+      }
+      const model = await generateModel({ prompt, type: ModelType.Text });
+      if (!model) {
+        throw new modelCreationFailed();
+      }
+
+      const uploadedModel = await this.s3Services.uploadSingleFile({
+        file: {
+          fieldname: "model",
+          originalname: "generated-model.glb",
+          encoding: "7bit",
+          mimetype: "model/gltf-binary",
+          size: model.length,
+          destination: "",
+          filename: "",
+          path: "",
+          buffer: model,
+        } as Express.Multer.File,
+        Path: `${res.locals.approved ? "approved" : "notApproved"}/${res.locals.user._id}/${project.name}/models`,
+      });
+
+      if (!uploadedModel) {
+        throw new internalServerError("Failed to upload model to S3.");
+      }
+      const getGlbFile = await this.s3Services.getModelUrl({
+        fileKey: uploadedModel,
+        expiresIn: 1200,
+      });
+
+      if (!getGlbFile) {
+        throw new internalServerError("Failed to get model URL from S3.");
+      }
+      const saveModel = await this.projectRepo.createModel({
+        projectId,
+        userId: res.locals.user._id,
+        data: {
+          modelUrl: uploadedModel,
+        },
+      });
+      if (!saveModel) {
+        throw new internalServerError("Failed to save model to database.");
+      }
+      return successHandler({
+        res,
+        msg: "Model created successfully",
+        status: 200,
+        data: {
+          _id: saveModel?.models?.[
+            saveModel?.models?.length - 1
+          ]?._id.toString(),
+          modelUrl: getGlbFile,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+  uploadGlb = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response> => {
+    const { projectId }: getProjectByIdDTO = req.params as getProjectByIdDTO;
+    const files = req.files as Express.Multer.File[];
+    if (!files || files.length !== 1) {
+      return res.status(400).json({
+        message: "Please upload exactly 1 file.",
+      });
+    }
+    try {
+      const project = await this.projectRepo.getProjectById({
+        projectId,
+        userId: res.locals.user._id,
+      });
+      if (!project) {
+        throw new projectNotFound();
+      }
+      const uploadedModel = await this.s3Services.uploadSingleFile({
+        file: {
+          fieldname: "model",
+          originalname: "generated-model.glb",
+          encoding: "7bit",
+          mimetype: "model/gltf-binary",
+          size: files[0]?.size,
+          destination: "",
+          filename: "",
+          path: "",
+          buffer: files[0]?.buffer,
+        } as Express.Multer.File,
+        Path: `${res.locals.approved ? "approved" : "notApproved"}/${res.locals.user._id}/${project.name}/models`,
+      });
+      if (!uploadedModel) {
+        throw new internalServerError("Failed to upload model to S3.");
+      }
+
+      const saveModel = await this.projectRepo.createModel({
+        projectId,
+        userId: res.locals.user._id,
+        data: {
+          modelUrl: uploadedModel,
+        },
+      });
+      if (!saveModel) {
+        throw new internalServerError("Failed to save model to database.");
+      }
+
+      return successHandler({
+        res,
+        msg: "Model uploaded successfully",
+        status: 200,
       });
     } catch (error) {
       throw error;

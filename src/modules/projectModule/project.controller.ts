@@ -4,6 +4,7 @@ import {
   createProjectSchema,
   Image2ModelSchema,
   updateProjectSchema,
+  uploadGlbSchema,
 } from "./project.validation";
 import ProjectService from "./project.service";
 import { uploadFile } from "../../utils";
@@ -15,6 +16,8 @@ const routes = {
   updateProject: "/:projectId",
   deleteProject: "/:projectId",
   Image2Model: "/image2model/:projectId",
+  text2Model: "/text2model/:projectId",
+  uploadGlb: "/upload-glb/:projectId",
 };
 
 const router = Router();
@@ -32,6 +35,14 @@ router.post(
   uploadFile({}).array("images", 5),
   validationMiddleware(Image2ModelSchema),
   projectService.Image2Model,
+);
+router.post(routes.text2Model, auth(), projectService.text2Model);
+router.post(
+  routes.uploadGlb,
+  auth(),
+  uploadFile({ mimeType: ["model/gltf-binary"] }).array("model", 1),
+  validationMiddleware(uploadGlbSchema),
+  projectService.uploadGlb,
 );
 
 router.get(routes.getProjectById, auth(), projectService.getProjectById);
