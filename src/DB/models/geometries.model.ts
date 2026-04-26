@@ -34,6 +34,7 @@ export const geometrySchema = new Schema<IGeometry>(
       x: { type: Number, default: 1 },
       y: { type: Number, default: 1 },
       z: { type: Number, default: 1 },
+      _order: { type: String, default: "XYZ" },
     },
     color: {
       r: { type: Number, default: 1 },

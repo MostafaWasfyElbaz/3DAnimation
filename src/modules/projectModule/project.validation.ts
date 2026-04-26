@@ -35,6 +35,7 @@ const geometrySchema = z.object({
       x: z.number().optional(),
       y: z.number().optional(),
       z: z.number().optional(),
+      _order: z.string().optional(),
     })
     .optional(),
   scale: z

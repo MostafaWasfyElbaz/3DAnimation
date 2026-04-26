@@ -14,6 +14,7 @@ export interface IGeometry {
     x: number;
     y: number;
     z: number;
+    _order: string;
   };
   scale: {
     x: number;
