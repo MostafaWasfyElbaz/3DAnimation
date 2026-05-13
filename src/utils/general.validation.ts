@@ -45,4 +45,5 @@ export const generalValidation = {
   id: z.string().length(24, "Invalid ID format"),
   ContentType: z.enum(Images),
   Originalname: z.string(),
+  uuid: z.uuid(),
 };

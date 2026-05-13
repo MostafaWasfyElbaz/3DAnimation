@@ -1,32 +1,45 @@
-import { UUIDTypes } from "uuid";
-
 export interface IGeometry {
-  uuid: UUIDTypes;
+  uuid: string;
+  geometryType: string;
   name: string;
-  type: string;
-  parameters: any;
-  position: {
+  visible?: boolean;
+  isLocked?: boolean;
+  castShadow?: boolean;
+  receiveShadow?: boolean;
+  position?: {
     x: number;
     y: number;
     z: number;
   };
-  rotation: {
-    x: number;
-    y: number;
-    z: number;
-    _order: string;
-  };
-  scale: {
+  rotation?: {
     x: number;
     y: number;
     z: number;
   };
-  color: {
-    r: number;
-    g: number;
-    b: number;
+  scale?: {
+    x: number;
+    y: number;
+    z: number;
   };
-  opacity: number;
-  createdAt: Date;
-  updatedAt: Date;
+  size?: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  material?: {
+    type: string;
+    color?: string;
+    props?: {
+      opacity?: number;
+      roughness?: number;
+      metalness?: number;
+      wireframe?: boolean;
+      shininess?: number;
+      transmission?: number;
+      clearcoat?: number;
+      clearcoatRoughness?: number;
+      thickness?: number;
+      ior?: number;
+    };
+  };
 }

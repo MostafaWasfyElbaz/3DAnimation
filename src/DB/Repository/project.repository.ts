@@ -1,8 +1,4 @@
-import {
-  Model,
-  HydratedDocument,
-  Types,
-} from "mongoose";
+import { Model, HydratedDocument, Types } from "mongoose";
 import { IProject, IProjectRepo, IGeometry, IModel } from "../../common";
 import DBRepository from "./db.repository";
 import { Project } from "../models/project.model";
@@ -18,16 +14,21 @@ export default class ProjectRepository
   createProject = async ({
     name,
     userId,
+    scene,
   }: {
     name: string;
     userId: string;
-  }): Promise<{ id: string; name: string } | null> => {
+    scene: IProject["scene"];
+  }): Promise<{
+    id: string;
+    name: string;
+  } | null> => {
     const existingProject = await this.model.findOne({ name, userId });
     if (existingProject) {
       return null;
     }
     const projects = await this.create({
-      data: [{ name, userId: new Types.ObjectId(userId) }],
+      data: [{ name, userId: new Types.ObjectId(userId), scene }],
     });
     const project = projects[0] as HydratedDocument<IProject>;
 
@@ -35,7 +36,10 @@ export default class ProjectRepository
       return null;
     }
 
-    return { id: project._id.toString(), name: project.name };
+    return {
+      id: project._id.toString(),
+      name: project.name,
+    };
   };
 
   createModel = async ({
@@ -79,6 +83,9 @@ export default class ProjectRepository
         _id: 1,
         geometries: 1,
         models: 1,
+        scene: 1,
+        createdAt: 1,
+        updatedAt: 1,
       },
     });
     if (!project) {
@@ -126,6 +133,7 @@ export default class ProjectRepository
       projectName?: string;
       geometries?: IGeometry[];
       models?: IModel[];
+      scene?: IProject["scene"];
     };
     userId: string;
     toDelete?: { _id: string; url: string }[];
@@ -137,6 +145,7 @@ export default class ProjectRepository
     }
     if (data.projectName) project.name = data.projectName;
     if (data.geometries) project.geometries = data.geometries;
+    if (data.scene) project.scene = data.scene;
     if (toDelete && toDelete.length > 0 && project.models) {
       const idsToDelete = toDelete.map((m) => new Types.ObjectId(m._id));
       (project.models as any).pull(...idsToDelete);

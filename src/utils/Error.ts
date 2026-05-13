@@ -8,7 +8,7 @@ export class ApplicationException extends Error {
 
 export class validationError extends ApplicationException {
   constructor(msg: string[], statusCode: number, options?: ErrorOptions) {
-    super(msg.join("\n"), statusCode, options);
+    super(msg.join(" "), statusCode, options);
   }
 }
 
@@ -80,8 +80,6 @@ export class modelCreationFailed extends ApplicationException {
     super(msg, statusCode);
   }
 }
-
-
 
 export class failedToGenerateLink extends ApplicationException {
   constructor(

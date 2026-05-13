@@ -7,9 +7,11 @@ export interface IProjectRepo {
   createProject({
     name,
     userId,
+    scene,
   }: {
     name: string;
     userId: string;
+    scene: IProject["scene"];
   }): Promise<{ id: string; name: string } | null>;
 
   getProjectById({
@@ -39,6 +41,7 @@ export interface IProjectRepo {
       projectName?: string;
       geometries?: IGeometry[];
       models?: IModel[];
+      scene?: IProject["scene"];
     };
     userId: string;
     toDelete?: { _id: string; url: string }[];

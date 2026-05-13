@@ -1,6 +1,15 @@
 import mongoose, { Schema } from "mongoose";
 import { IGeometry } from "../../common";
 
+const vector3Schema = new Schema(
+  {
+    x: { type: Number, required: true },
+    y: { type: Number, required: true },
+    z: { type: Number, required: true },
+  },
+  { _id: false },
+);
+
 export const geometrySchema = new Schema<IGeometry>(
   {
     uuid: {
@@ -10,38 +19,35 @@ export const geometrySchema = new Schema<IGeometry>(
       maxlength: 36,
     },
 
-    name: {
-      type: String,
-      default: "Unnamed 3D Object",
-    },
-    type: {
-      type: String,
-      required: true,
-    },
+    geometryType: { type: String, required: true },
+    name: { type: String, default: "Unnamed 3D Object" },
 
-    parameters: { type: mongoose.Schema.Types.Mixed, required: true },
-    position: {
-      x: { type: Number, default: 0 },
-      y: { type: Number, default: 0 },
-      z: { type: Number, default: 0 },
+    visible: { type: Boolean },
+    isLocked: { type: Boolean },
+    castShadow: { type: Boolean },
+    receiveShadow: { type: Boolean },
+
+    position: vector3Schema,
+    rotation: vector3Schema,
+    scale: vector3Schema,
+    size: vector3Schema,
+
+    material: {
+      type: { type: String },
+      color: { type: String },
+      props: {
+        opacity: { type: Number },
+        roughness: { type: Number },
+        metalness: { type: Number },
+        wireframe: { type: Boolean },
+        shininess: { type: Number },
+        transmission: { type: Number },
+        clearcoat: { type: Number },
+        clearcoatRoughness: { type: Number },
+        thickness: { type: Number },
+        ior: { type: Number },
+      },
     },
-    rotation: {
-      x: { type: Number, default: 0 },
-      y: { type: Number, default: 0 },
-      z: { type: Number, default: 0 },
-    },
-    scale: {
-      x: { type: Number, default: 1 },
-      y: { type: Number, default: 1 },
-      z: { type: Number, default: 1 },
-      _order: { type: String, default: "XYZ" },
-    },
-    color: {
-      r: { type: Number, default: 1 },
-      g: { type: Number, default: 1 },
-      b: { type: Number, default: 1 },
-    },
-    opacity: { type: Number, default: 1 },
   },
   { timestamps: true, _id: false },
 );

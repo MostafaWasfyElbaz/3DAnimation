@@ -14,13 +14,12 @@ export const validationMiddleware = (schema: z.ZodSchema) => {
     const result = schema.safeParse(data);
     if (!result.success) {
       const formattedErrors: Record<string, string> = {};
-
       result.error.issues.forEach((issue) => {
         const path = issue.path
           .map((p) => (typeof p === "number" ? `[${p}]` : p))
           .join(".");
 
-        formattedErrors[path] = issue.message;
+        formattedErrors[path] = path + ": " + issue.message;
       });
       return next(new validationError(Object.values(formattedErrors), 400));
     }

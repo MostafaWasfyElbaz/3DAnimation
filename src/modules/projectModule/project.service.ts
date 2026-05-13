@@ -60,12 +60,13 @@ export default class ProjectService implements IProjectServices {
     res: Response,
     next: NextFunction,
   ): Promise<Response> => {
-    const { name }: createProjectDTO = req.body;
+    const { name, scene }: createProjectDTO = req.body;
 
     const user = res.locals.user;
     try {
       const project = await this.projectRepo.createProject({
         name,
+        scene,
         userId: user._id,
       });
 
@@ -81,7 +82,7 @@ export default class ProjectService implements IProjectServices {
         res,
         msg: "Project created successfully",
         status: 201,
-        data: { _id: project.id, name: project.name },
+        data: { project },
       });
     } catch (error) {
       throw error;
@@ -204,12 +205,13 @@ export default class ProjectService implements IProjectServices {
     next: NextFunction,
   ): Promise<Response> => {
     const { projectId }: getProjectByIdDTO = req.params as getProjectByIdDTO;
-    const { geometries, projectName, models }: updateProjectDTO = req.body;
+    const { geometries, projectName, models, scene }: updateProjectDTO =
+      req.body;
     const user = res.locals.user;
     const toDelete = [];
     const data = {};
 
-    if (!models && !geometries && !projectName) {
+    if (!models && !geometries && !projectName && !scene) {
       return successHandler({
         res,
         msg: "No changes made to the project",
@@ -223,6 +225,9 @@ export default class ProjectService implements IProjectServices {
     }
     if (models) {
       Object.assign(data, { models });
+    }
+    if (scene) {
+      Object.assign(data, { scene });
     }
 
     const project = await this.projectRepo.getProjectById({
