@@ -71,7 +71,7 @@ export default class ProjectService implements IProjectServices {
       });
 
       if (!project) {
-        throw new projectCreationFailed("dublicate name", 400);
+        throw new projectCreationFailed("Project with this name already exists", 400);
       }
 
       if (!project.id || !project.name) {

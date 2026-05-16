@@ -92,7 +92,11 @@ const ProjectSchema = new Schema<IProject>(
     geometries: [geometrySchema],
     models: [modelSchema],
 
-    scene: { type: sceneSchema, required: true },
+    scene: {
+      type: sceneSchema,
+      required: true,
+      default: () => ({ backgroundColor: "#262626" }),
+    },
   },
   { timestamps: true },
 );
