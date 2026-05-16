@@ -61,6 +61,7 @@ export default class ProjectRepository
     const model = await this.findOneAndUpdate({
       filter: { _id: projectId, userId },
       data: { $push: { models: data } },
+      options: { new: true, projection: { models: { $slice: -1 } } },
     });
     if (!model) {
       return null;

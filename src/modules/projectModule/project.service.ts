@@ -71,7 +71,10 @@ export default class ProjectService implements IProjectServices {
       });
 
       if (!project) {
-        throw new projectCreationFailed("Project with this name already exists", 400);
+        throw new projectCreationFailed(
+          "Project with this name already exists",
+          400,
+        );
       }
 
       if (!project.id || !project.name) {
@@ -339,6 +342,7 @@ export default class ProjectService implements IProjectServices {
       if (!saveModel) {
         throw new internalServerError("Failed to save model to database.");
       }
+
       return successHandler({
         res,
         msg: "Model created successfully",
