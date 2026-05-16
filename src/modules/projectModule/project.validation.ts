@@ -3,7 +3,7 @@ import { generalValidation } from "../../utils";
 import { IGeometry, IProject, Model } from "../../common";
 
 const sceneSchema = z.strictObject({
-  backgroundColor: z.string(),
+  backgroundColor: z.string().default("#262626"),
   fog: z
     .strictObject({
       type: z.string(),

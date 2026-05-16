@@ -67,6 +67,7 @@ const sceneSchema = new Schema(
     backgroundColor: {
       type: String,
       required: true,
+      default: "#262626",
     },
     fog: fogSchema,
     lights: [lightSchema],
